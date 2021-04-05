@@ -5,30 +5,36 @@ import propTypes from "prop-types";
 import { bindActionCreators } from "redux";
 
 class CoursesPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      course: {
-        title: "",
-      },
-    };
-  }
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     course: {
+  //       title: "",
+  //     },
+  //   };
+  // }
 
-  handleChange = (e) => {
-    const course = { ...this.state.course, title: e.target.value };
-    this.setState({ course });
-  };
+  // handleChange = (e) => {
+  //   const course = { ...this.state.course, title: e.target.value };
+  //   this.setState({ course });
+  // };
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.actions.createCourse(this.state.course);
-    this.setState({ course: { title: "" } });
+  // handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   this.props.actions.createCourse(this.state.course);
+  //   this.setState({ course: { title: "" } });
+  // };
+
+  componentDidMount = () => {
+    this.props.actions.loadCourses().catch((error) => {
+      console.log("failed to load Courses,", error);
+    });
   };
 
   render() {
     return (
       <>
-        <form onSubmit={this.handleSubmit}>
+        {/* <form onSubmit={this.handleSubmit}>
           <h2>Courses</h2>
           <h3>Add course</h3>
           <input
@@ -37,10 +43,11 @@ class CoursesPage extends Component {
             value={this.state.course.title}
           />
           <input type='submit' value='Save' />
-        </form>
+        </form> */}
+        <h2>Courses</h2>
         <div>
           {this.props.courses.map((course, idx) => (
-            <p key={`${course.title}_${idx}`}>{course.title}</p>
+            <div key={`${course.title}_${idx}`}>{course.title}</div>
           ))}
         </div>
       </>
