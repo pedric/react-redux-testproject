@@ -39,8 +39,8 @@ class CoursesPage extends Component {
           <input type='submit' value='Save' />
         </form>
         <div>
-          {this.props.courses.map((course) => (
-            <p key={course.title}>{course.title}</p>
+          {this.props.courses.map((course, idx) => (
+            <p key={`${course.title}_${idx}`}>{course.title}</p>
           ))}
         </div>
       </>
