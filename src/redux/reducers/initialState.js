@@ -1,6 +1,6 @@
-const state {
+const state = {
   courses: [],
-  authors: []
+  authors: [],
 };
 
 export default state;
