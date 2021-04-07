@@ -24,6 +24,7 @@
     "start:api": "node src/tools/apiServer.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:jest": "jest --watchAll",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
