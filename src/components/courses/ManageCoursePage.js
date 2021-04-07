@@ -5,6 +5,7 @@ import { loadAuthors } from "../../redux/actions/authorActions";
 import propTypes from "prop-types";
 import CourseForm from "./CourseForm";
 import { newCourse } from "../../tools/mockData";
+import Spinner from "../common/Spinner";
 
 const ManageCoursePage = ({
   courses,
@@ -17,6 +18,7 @@ const ManageCoursePage = ({
 }) => {
   const [course, setCourse] = useState({ ...props.course });
   const [errors, setErrors] = useState({});
+  const [saving, setSaving] = useState(false);
   useEffect(() => {
     if (courses.length === 0) {
       loadCourses().catch((error) => {
@@ -41,24 +43,41 @@ const ManageCoursePage = ({
     }));
   };
 
-  const handleSave = (e) => {
-    e.preventDefault();
-    saveCourse(course).then(() => {
-      history.push("/courses");
-    });
+  const formIsValid = () => {
+    const { title, authorId, category } = course;
+    const errors = {};
+    if (!title) errors.title = "Title is required";
+    if (!authorId) errors.author = "Author is required";
+    if (!category) errors.category = "Category is required";
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
-  return (
-    <>
-      <h2>Manage course</h2>
-      <CourseForm
-        course={course}
-        errors={errors}
-        authors={authors}
-        onChange={handleChange}
-        onSave={handleSave}
-      />
-    </>
+  const handleSave = (e) => {
+    e.preventDefault();
+    if (!formIsValid()) return;
+    setSaving(true);
+    saveCourse(course)
+      .then(() => {
+        history.push("/courses/");
+      })
+      .catch((error) => {
+        setSaving(false);
+        setErrors({ onSave: error.message });
+      });
+  };
+
+  return authors.length === 0 || courses.length === 0 ? (
+    <Spinner />
+  ) : (
+    <CourseForm
+      course={course}
+      errors={errors}
+      authors={authors}
+      onChange={handleChange}
+      onSave={handleSave}
+      saving={saving}
+    />
   );
 };
 
@@ -66,7 +85,7 @@ ManageCoursePage.propTypes = {
   course: propTypes.object.isRequired,
   authors: propTypes.array.isRequired,
   courses: propTypes.array.isRequired,
-  actions: propTypes.object.isRequired,
+  actions: propTypes.object,
   loadAuthors: propTypes.func.isRequired,
   loadCourses: propTypes.func.isRequired,
   saveCourse: propTypes.func.isRequired,
